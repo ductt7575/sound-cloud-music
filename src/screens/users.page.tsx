@@ -1,11 +1,11 @@
-import UsersTable from "../components/users/users.table";
+import UsersTable from '../components/users/users.table'
 
 const UsersPage = () => {
-    return (
-        <div>
-            <UsersTable />
-        </div>
-    )
+  return (
+    <div>
+      <UsersTable />
+    </div>
+  )
 }
 
-export default UsersPage;
+export default UsersPage

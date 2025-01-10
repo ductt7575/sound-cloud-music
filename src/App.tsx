@@ -1,8 +1,7 @@
-import { Typography } from "antd";
+import Title from 'antd/es/typography/Title'
 
-const { Title } = Typography;
 function App() {
-  return <Title level={4}>Welcome to my admin app: User management</Title>;
+  return <Title level={4}>Welcome to my admin app: User management</Title>
 }
 
-export default App;
+export default App

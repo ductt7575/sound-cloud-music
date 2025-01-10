@@ -1,53 +1,54 @@
-import { Modal, Input, notification, Select, Form, InputNumber } from "antd";
-import { IUsers } from "./users.table";
-const { Option } = Select;
+import { Form, Input, InputNumber, Modal, notification, Select } from 'antd'
+
+import { IUsers } from './users.table'
+const { Option } = Select
 
 interface IProps {
-  access_token: string;
-  getData: () => Promise<void>;
-  isCreateModalOpen: boolean;
-  setIsCreateModalOpen: (v: boolean) => void;
+  access_token: string
+  getData: () => Promise<void>
+  isCreateModalOpen: boolean
+  setIsCreateModalOpen: (v: boolean) => void
 }
 
 const CreateUserModal = (props: IProps) => {
   const { access_token, getData, isCreateModalOpen, setIsCreateModalOpen } =
-    props;
+    props
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
   const handleCloseCreateModal = () => {
-    form.resetFields();
-    setIsCreateModalOpen(false);
-  };
+    form.resetFields()
+    setIsCreateModalOpen(false)
+  }
 
-  const onFinish = async (values: Omit<IUsers, "_id">) => {
-    console.log("Success:", values);
-    const { name, email, password, age, gender, role, address } = values;
+  const onFinish = async (values: Omit<IUsers, '_id'>) => {
+    console.log('Success:', values)
+    const { name, email, password, age, gender, role, address } = values
 
-    const data = { name, email, password, age, gender, role, address };
-    const res = await fetch("http://localhost:8000/api/v1/users", {
-      method: "POST",
+    const data = { name, email, password, age, gender, role, address }
+    const res = await fetch('http://localhost:8000/api/v1/users', {
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data),
-    });
+      body: JSON.stringify(data)
+    })
 
-    const d = await res.json();
+    const d = await res.json()
     if (d.data) {
-      await getData();
+      await getData()
       notification.success({
-        message: "Tạo mới user thành công.",
-      });
-      handleCloseCreateModal();
+        message: 'Tạo mới user thành công.'
+      })
+      handleCloseCreateModal()
     } else {
       notification.error({
-        message: "Có lỗi xảy ra",
-        description: JSON.stringify(d.message),
-      });
+        message: 'Có lỗi xảy ra',
+        description: JSON.stringify(d.message)
+      })
     }
-  };
+  }
 
   return (
     <Modal
@@ -62,7 +63,7 @@ const CreateUserModal = (props: IProps) => {
           style={{ marginBottom: 5 }}
           label="Name"
           name="name"
-          rules={[{ required: true, message: "Please input your name!" }]}
+          rules={[{ required: true, message: 'Please input your name!' }]}
         >
           <Input />
         </Form.Item>
@@ -71,7 +72,7 @@ const CreateUserModal = (props: IProps) => {
           style={{ marginBottom: 5 }}
           label="Email"
           name="email"
-          rules={[{ required: true, message: "Please input your email!" }]}
+          rules={[{ required: true, message: 'Please input your email!' }]}
         >
           <Input type="email" />
         </Form.Item>
@@ -80,7 +81,7 @@ const CreateUserModal = (props: IProps) => {
           style={{ marginBottom: 5 }}
           label="Password"
           name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
+          rules={[{ required: true, message: 'Please input your password!' }]}
         >
           <Input.Password />
         </Form.Item>
@@ -88,16 +89,16 @@ const CreateUserModal = (props: IProps) => {
           style={{ marginBottom: 5 }}
           label="Age"
           name="age"
-          rules={[{ required: true, message: "Please input your age!" }]}
+          rules={[{ required: true, message: 'Please input your age!' }]}
         >
-          <InputNumber style={{ width: "100%" }} />
+          <InputNumber style={{ width: '100%' }} />
         </Form.Item>
 
         <Form.Item
           style={{ marginBottom: 5 }}
           label="Address"
           name="address"
-          rules={[{ required: true, message: "Please input your address!" }]}
+          rules={[{ required: true, message: 'Please input your address!' }]}
         >
           <Input />
         </Form.Item>
@@ -134,7 +135,7 @@ const CreateUserModal = (props: IProps) => {
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default CreateUserModal;
+export default CreateUserModal

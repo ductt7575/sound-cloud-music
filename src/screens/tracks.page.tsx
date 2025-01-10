@@ -1,11 +1,11 @@
-import TracksTable from "../components/tracks/tracks.table";
+import TracksTable from '../components/tracks/tracks.table'
 
 const TracksPage = () => {
-    return (
-        <div>
-            <TracksTable />
-        </div>
-    )
+  return (
+    <div>
+      <TracksTable />
+    </div>
+  )
 }
 
-export default TracksPage;
+export default TracksPage

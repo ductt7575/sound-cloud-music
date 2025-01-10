@@ -1,11 +1,11 @@
-import CommentsTable from "../components/comments/comments.table";
+import CommentsTable from '../components/comments/comments.table'
 
 const CommentsPage = () => {
-    return (
-        <div>
-            <CommentsTable />
-        </div>
-    )
+  return (
+    <div>
+      <CommentsTable />
+    </div>
+  )
 }
 
-export default CommentsPage;
+export default CommentsPage

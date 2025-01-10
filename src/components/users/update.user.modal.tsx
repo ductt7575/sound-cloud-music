@@ -1,15 +1,16 @@
-import { Form, Input, InputNumber, Modal, notification, Select } from "antd";
-import { useEffect } from "react";
-import { IUsers } from "./users.table";
+import { Form, Input, InputNumber, Modal, notification, Select } from 'antd'
+import { useEffect } from 'react'
 
-const { Option } = Select;
+import { IUsers } from './users.table'
+
+const { Option } = Select
 interface IProps {
-  access_token: string;
-  getData: () => Promise<void>;
-  isUpdateModalOpen: boolean;
-  setIsUpdateModalOpen: (v: boolean) => void;
-  dataUpdate: null | IUsers;
-  setDataUpdate: React.Dispatch<React.SetStateAction<IUsers | null>>;
+  access_token: string
+  getData: () => Promise<void>
+  isUpdateModalOpen: boolean
+  setIsUpdateModalOpen: (v: boolean) => void
+  dataUpdate: null | IUsers
+  setDataUpdate: React.Dispatch<React.SetStateAction<IUsers | null>>
 }
 
 const UpdateUserModal = (props: IProps) => {
@@ -19,10 +20,10 @@ const UpdateUserModal = (props: IProps) => {
     isUpdateModalOpen,
     setIsUpdateModalOpen,
     dataUpdate,
-    setDataUpdate,
-  } = props;
+    setDataUpdate
+  } = props
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
   useEffect(() => {
     if (dataUpdate) {
@@ -32,19 +33,19 @@ const UpdateUserModal = (props: IProps) => {
         age: dataUpdate.age,
         address: dataUpdate.address,
         role: dataUpdate.role,
-        gender: dataUpdate.gender,
-      });
+        gender: dataUpdate.gender
+      })
     }
-  }, [dataUpdate, form]);
+  }, [dataUpdate, form])
 
   const handleCloseCreateModal = () => {
-    setIsUpdateModalOpen(false);
-    form.resetFields();
-    setDataUpdate(null);
-  };
+    setIsUpdateModalOpen(false)
+    form.resetFields()
+    setDataUpdate(null)
+  }
 
-  const onFinish = async (values: Omit<IUsers, "_id">) => {
-    const { name, email, age, gender, role, address } = values;
+  const onFinish = async (values: Omit<IUsers, '_id'>) => {
+    const { name, email, age, gender, role, address } = values
     if (dataUpdate) {
       const data = {
         _id: dataUpdate._id,
@@ -53,33 +54,33 @@ const UpdateUserModal = (props: IProps) => {
         age,
         gender,
         role,
-        address,
-      };
+        address
+      }
 
-      const res = await fetch("http://localhost:8000/api/v1/users", {
-        method: "PATCH",
+      const res = await fetch('http://localhost:8000/api/v1/users', {
+        method: 'PATCH',
         headers: {
           Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data),
-      });
+        body: JSON.stringify(data)
+      })
 
-      const d = await res.json();
+      const d = await res.json()
       if (d.data) {
-        await getData();
+        await getData()
         notification.success({
-          message: "Cập nhật user thành công.",
-        });
-        handleCloseCreateModal();
+          message: 'Cập nhật user thành công.'
+        })
+        handleCloseCreateModal()
       } else {
         notification.error({
-          message: "Có lỗi xảy ra",
-          description: JSON.stringify(d.message),
-        });
+          message: 'Có lỗi xảy ra',
+          description: JSON.stringify(d.message)
+        })
       }
     }
-  };
+  }
 
   return (
     <Modal
@@ -94,7 +95,7 @@ const UpdateUserModal = (props: IProps) => {
           style={{ marginBottom: 5 }}
           label="Name"
           name="name"
-          rules={[{ required: true, message: "Please input your name!" }]}
+          rules={[{ required: true, message: 'Please input your name!' }]}
         >
           <Input />
         </Form.Item>
@@ -103,7 +104,7 @@ const UpdateUserModal = (props: IProps) => {
           style={{ marginBottom: 5 }}
           label="Email"
           name="email"
-          rules={[{ required: true, message: "Please input your email!" }]}
+          rules={[{ required: true, message: 'Please input your email!' }]}
         >
           <Input type="email" />
         </Form.Item>
@@ -115,8 +116,8 @@ const UpdateUserModal = (props: IProps) => {
           rules={[
             {
               required: dataUpdate ? false : true,
-              message: "Please input your password!",
-            },
+              message: 'Please input your password!'
+            }
           ]}
         >
           <Input.Password disabled={dataUpdate ? true : false} />
@@ -125,16 +126,16 @@ const UpdateUserModal = (props: IProps) => {
           style={{ marginBottom: 5 }}
           label="Age"
           name="age"
-          rules={[{ required: true, message: "Please input your age!" }]}
+          rules={[{ required: true, message: 'Please input your age!' }]}
         >
-          <InputNumber style={{ width: "100%" }} />
+          <InputNumber style={{ width: '100%' }} />
         </Form.Item>
 
         <Form.Item
           style={{ marginBottom: 5 }}
           label="Address"
           name="address"
-          rules={[{ required: true, message: "Please input your address!" }]}
+          rules={[{ required: true, message: 'Please input your address!' }]}
         >
           <Input />
         </Form.Item>
@@ -171,7 +172,7 @@ const UpdateUserModal = (props: IProps) => {
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default UpdateUserModal;
+export default UpdateUserModal

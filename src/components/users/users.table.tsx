@@ -1,43 +1,44 @@
-import { useEffect, useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
-import { Button, notification, Popconfirm, Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import CreateUserModal from "./create.user.modal";
-import UpdateUserModal from "./update.user.modal";
-import Title from "antd/es/typography/Title";
+import { PlusOutlined } from '@ant-design/icons'
+import { Button, notification, Popconfirm, Table } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import Title from 'antd/es/typography/Title'
+import { useEffect, useState } from 'react'
+
+import CreateUserModal from './create.user.modal'
+import UpdateUserModal from './update.user.modal'
 
 export interface IUsers {
-  _id: string;
-  email: string;
-  name: string;
-  role: string;
-  address: string;
-  gender: string;
-  password: string;
-  age: string;
+  _id: string
+  email: string
+  name: string
+  role: string
+  address: string
+  gender: string
+  password: string
+  age: string
 }
 
 const UsersTable = () => {
-  const [listUsers, setListUsers] = useState([]);
+  const [listUsers, setListUsers] = useState([])
 
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
-  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
 
-  const [dataUpdate, setDataUpdate] = useState<null | IUsers>(null);
+  const [dataUpdate, setDataUpdate] = useState<null | IUsers>(null)
 
-  const access_token = localStorage.getItem("access_token") as string;
+  const access_token = localStorage.getItem('access_token') as string
 
   const [meta, setMeta] = useState({
     current: 1,
     pageSize: 5,
     pages: 0,
-    total: 0,
-  });
+    total: 0
+  })
 
   useEffect(() => {
-    getData();
-  }, []);
+    getData()
+  }, [])
 
   const getData = async () => {
     const res = await fetch(
@@ -45,73 +46,73 @@ const UsersTable = () => {
       {
         headers: {
           Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
-        },
+          'Content-Type': 'application/json'
+        }
       }
-    );
+    )
 
-    const d = await res.json();
+    const d = await res.json()
     if (!d.data) {
       notification.error({
-        message: JSON.stringify(d.message),
-      });
+        message: JSON.stringify(d.message)
+      })
     }
-    setListUsers(d.data.result);
+    setListUsers(d.data.result)
     setMeta({
       current: d.data.meta.current,
       pageSize: d.data.meta.pageSize,
       pages: d.data.meta.pages,
-      total: d.data.meta.total,
-    });
-  };
+      total: d.data.meta.total
+    })
+  }
 
   const confirm = async (user: IUsers) => {
     const res = await fetch(`http://localhost:8000/api/v1/users/${user._id}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
         Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
-      },
-    });
+        'Content-Type': 'application/json'
+      }
+    })
 
-    const d = await res.json();
+    const d = await res.json()
     if (d.data) {
       notification.success({
-        message: "Xóa user thành công.",
-      });
-      await getData();
+        message: 'Xóa user thành công.'
+      })
+      await getData()
     } else {
       notification.error({
-        message: JSON.stringify(d.message),
-      });
+        message: JSON.stringify(d.message)
+      })
     }
-  };
+  }
 
   const columns: ColumnsType<IUsers> = [
     {
-      title: "Email",
-      dataIndex: "email",
+      title: 'Email',
+      dataIndex: 'email',
       render: (_value, record) => {
-        return <div>{record.email}</div>;
-      },
+        return <div>{record.email}</div>
+      }
     },
     {
-      title: "Name",
-      dataIndex: "name",
+      title: 'Name',
+      dataIndex: 'name'
     },
     {
-      title: "Role",
-      dataIndex: "role",
+      title: 'Role',
+      dataIndex: 'role'
     },
     {
-      title: "Actions",
+      title: 'Actions',
       render: (_value, record) => {
         return (
           <div>
             <Button
               onClick={() => {
-                setDataUpdate(record);
-                setIsUpdateModalOpen(true);
+                setDataUpdate(record)
+                setIsUpdateModalOpen(true)
               }}
               type="default"
             >
@@ -130,10 +131,10 @@ const UsersTable = () => {
               </Button>
             </Popconfirm>
           </div>
-        );
-      },
-    },
-  ];
+        )
+      }
+    }
+  ]
 
   const handleOnChange = async (page: number, pageSize: number) => {
     const res = await fetch(
@@ -141,33 +142,33 @@ const UsersTable = () => {
       {
         headers: {
           Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
-        },
+          'Content-Type': 'application/json'
+        }
       }
-    );
+    )
 
-    const d = await res.json();
+    const d = await res.json()
     if (!d.data) {
       notification.error({
-        message: JSON.stringify(d.message),
-      });
+        message: JSON.stringify(d.message)
+      })
     }
-    setListUsers(d.data.result);
+    setListUsers(d.data.result)
     setMeta({
       current: d.data.meta.current,
       pageSize: d.data.meta.pageSize,
       pages: d.data.meta.pages,
-      total: d.data.meta.total,
-    });
-  };
+      total: d.data.meta.total
+    })
+  }
 
   return (
     <div>
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
         }}
       >
         <Title level={4}>Table Users</Title>
@@ -175,7 +176,7 @@ const UsersTable = () => {
         <div>
           <Button
             icon={<PlusOutlined />}
-            type={"primary"}
+            type={'primary'}
             onClick={() => setIsCreateModalOpen(true)}
           >
             Add new
@@ -186,7 +187,7 @@ const UsersTable = () => {
       <Table
         columns={columns}
         dataSource={listUsers}
-        rowKey={"_id"}
+        rowKey={'_id'}
         pagination={{
           current: meta.current,
           pageSize: meta.pageSize,
@@ -195,7 +196,7 @@ const UsersTable = () => {
             `${range[0]}-${range[1]} of ${total} items`,
           onChange: (page: number, pageSize: number) =>
             handleOnChange(page, pageSize),
-          showSizeChanger: true,
+          showSizeChanger: true
         }}
       />
 
@@ -215,7 +216,7 @@ const UsersTable = () => {
         setDataUpdate={setDataUpdate}
       />
     </div>
-  );
-};
+  )
+}
 
-export default UsersTable;
+export default UsersTable

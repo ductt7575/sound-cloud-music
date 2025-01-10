@@ -1,34 +1,34 @@
-import { Button, notification, Popconfirm, Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import Title from "antd/es/typography/Title";
-import { useEffect, useState } from "react";
+import { Button, notification, Popconfirm, Table } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import Title from 'antd/es/typography/Title'
+import { useEffect, useState } from 'react'
 
 export interface ITracks {
-  _id: string;
-  title: string;
-  description: string;
-  category: string;
-  imgUrl: string;
-  trackUrl: string;
-  countLike: number;
-  countPlay: number;
+  _id: string
+  title: string
+  description: string
+  category: string
+  imgUrl: string
+  trackUrl: string
+  countLike: number
+  countPlay: number
 }
 
 const TracksTable = () => {
-  const [listUsers, setListUsers] = useState([]);
+  const [listUsers, setListUsers] = useState([])
 
-  const access_token = localStorage.getItem("access_token") as string;
+  const access_token = localStorage.getItem('access_token') as string
 
   const [meta, setMeta] = useState({
     current: 1,
     pageSize: 5,
     pages: 0,
-    total: 0,
-  });
+    total: 0
+  })
 
   useEffect(() => {
-    getData();
-  }, []);
+    getData()
+  }, [])
 
   const getData = async () => {
     const res = await fetch(
@@ -36,82 +36,82 @@ const TracksTable = () => {
       {
         headers: {
           Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
-        },
+          'Content-Type': 'application/json'
+        }
       }
-    );
+    )
 
-    const d = await res.json();
+    const d = await res.json()
     if (!d.data) {
       notification.error({
-        message: JSON.stringify(d.message),
-      });
+        message: JSON.stringify(d.message)
+      })
     }
-    setListUsers(d.data.result);
+    setListUsers(d.data.result)
     setMeta({
       current: d.data.meta.current,
       pageSize: d.data.meta.pageSize,
       pages: d.data.meta.pages,
-      total: d.data.meta.total,
-    });
-  };
+      total: d.data.meta.total
+    })
+  }
 
   const confirm = async (track: ITracks) => {
     const res = await fetch(
       `http://localhost:8000/api/v1/tracks/${track._id}`,
       {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
           Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
-        },
+          'Content-Type': 'application/json'
+        }
       }
-    );
+    )
 
-    const d = await res.json();
+    const d = await res.json()
     if (d.data) {
       notification.success({
-        message: "Xóa track thành công.",
-      });
-      await getData();
+        message: 'Xóa track thành công.'
+      })
+      await getData()
     } else {
       notification.error({
-        message: JSON.stringify(d.message),
-      });
+        message: JSON.stringify(d.message)
+      })
     }
-  };
+  }
 
   const columns: ColumnsType<ITracks> = [
     {
-      dataIndex: "_id",
-      title: "STT",
+      dataIndex: '_id',
+      title: 'STT',
       render: (_value, _record, index) => {
-        return <>{(meta.current - 1) * meta.pageSize + index + 1}</>;
-      },
+        return <>{(meta.current - 1) * meta.pageSize + index + 1}</>
+      }
     },
 
     {
-      title: "Title",
-      dataIndex: "title",
+      title: 'Title',
+      dataIndex: 'title'
     },
     {
-      title: "Description",
-      dataIndex: "description",
+      title: 'Description',
+      dataIndex: 'description'
     },
     {
-      title: "Category",
-      dataIndex: "category",
+      title: 'Category',
+      dataIndex: 'category'
     },
     {
-      title: "Track url",
-      dataIndex: "trackUrl",
+      title: 'Track url',
+      dataIndex: 'trackUrl'
     },
     {
-      title: "Uploader",
-      dataIndex: ["uploader", "name"],
+      title: 'Uploader',
+      dataIndex: ['uploader', 'name']
     },
     {
-      title: "Actions",
+      title: 'Actions',
       render: (_value, record) => {
         return (
           <div>
@@ -127,10 +127,10 @@ const TracksTable = () => {
               </Button>
             </Popconfirm>
           </div>
-        );
-      },
-    },
-  ];
+        )
+      }
+    }
+  ]
 
   const handleOnChange = async (page: number, pageSize: number) => {
     const res = await fetch(
@@ -138,33 +138,33 @@ const TracksTable = () => {
       {
         headers: {
           Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
-        },
+          'Content-Type': 'application/json'
+        }
       }
-    );
+    )
 
-    const d = await res.json();
+    const d = await res.json()
     if (!d.data) {
       notification.error({
-        message: JSON.stringify(d.message),
-      });
+        message: JSON.stringify(d.message)
+      })
     }
-    setListUsers(d.data.result);
+    setListUsers(d.data.result)
     setMeta({
       current: d.data.meta.current,
       pageSize: d.data.meta.pageSize,
       pages: d.data.meta.pages,
-      total: d.data.meta.total,
-    });
-  };
+      total: d.data.meta.total
+    })
+  }
 
   return (
     <div>
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
         }}
       >
         <Title level={4}>Table Tracks</Title>
@@ -173,7 +173,7 @@ const TracksTable = () => {
       <Table
         columns={columns}
         dataSource={listUsers}
-        rowKey={"_id"}
+        rowKey={'_id'}
         pagination={{
           current: meta.current,
           pageSize: meta.pageSize,
@@ -182,11 +182,11 @@ const TracksTable = () => {
             `${range[0]}-${range[1]} of ${total} items`,
           onChange: (page: number, pageSize: number) =>
             handleOnChange(page, pageSize),
-          showSizeChanger: true,
+          showSizeChanger: true
         }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default TracksTable;
+export default TracksTable
