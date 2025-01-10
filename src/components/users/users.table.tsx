@@ -4,19 +4,10 @@ import type { ColumnsType } from 'antd/es/table'
 import Title from 'antd/es/typography/Title'
 import { useEffect, useState } from 'react'
 
+import { User } from '@/types/user-management/user'
+
 import CreateUserModal from './create.user.modal'
 import UpdateUserModal from './update.user.modal'
-
-export interface IUsers {
-  _id: string
-  email: string
-  name: string
-  role: string
-  address: string
-  gender: string
-  password: string
-  age: string
-}
 
 const UsersTable = () => {
   const [listUsers, setListUsers] = useState([])
@@ -25,7 +16,7 @@ const UsersTable = () => {
 
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
 
-  const [dataUpdate, setDataUpdate] = useState<null | IUsers>(null)
+  const [dataUpdate, setDataUpdate] = useState<null | User>(null)
 
   const access_token = localStorage.getItem('access_token') as string
 
@@ -66,7 +57,7 @@ const UsersTable = () => {
     })
   }
 
-  const confirm = async (user: IUsers) => {
+  const confirm = async (user: User) => {
     const res = await fetch(`http://localhost:8000/api/v1/users/${user._id}`, {
       method: 'DELETE',
       headers: {
@@ -88,7 +79,7 @@ const UsersTable = () => {
     }
   }
 
-  const columns: ColumnsType<IUsers> = [
+  const columns: ColumnsType<User> = [
     {
       title: 'Email',
       dataIndex: 'email',

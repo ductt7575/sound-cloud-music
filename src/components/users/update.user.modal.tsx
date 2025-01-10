@@ -1,28 +1,26 @@
 import { Form, Input, InputNumber, Modal, notification, Select } from 'antd'
 import { useEffect } from 'react'
 
-import { IUsers } from './users.table'
+import { User } from '@/types/user-management/user'
 
 const { Option } = Select
-interface IProps {
+interface UpdateUserModalProps {
   access_token: string
   getData: () => Promise<void>
   isUpdateModalOpen: boolean
   setIsUpdateModalOpen: (v: boolean) => void
-  dataUpdate: null | IUsers
-  setDataUpdate: React.Dispatch<React.SetStateAction<IUsers | null>>
+  dataUpdate: null | User
+  setDataUpdate: React.Dispatch<React.SetStateAction<User | null>>
 }
 
-const UpdateUserModal = (props: IProps) => {
-  const {
-    access_token,
-    getData,
-    isUpdateModalOpen,
-    setIsUpdateModalOpen,
-    dataUpdate,
-    setDataUpdate
-  } = props
-
+const UpdateUserModal = ({
+  access_token,
+  getData,
+  isUpdateModalOpen,
+  setIsUpdateModalOpen,
+  dataUpdate,
+  setDataUpdate
+}: UpdateUserModalProps) => {
   const [form] = Form.useForm()
 
   useEffect(() => {
@@ -44,7 +42,7 @@ const UpdateUserModal = (props: IProps) => {
     setDataUpdate(null)
   }
 
-  const onFinish = async (values: Omit<IUsers, '_id'>) => {
+  const onFinish = async (values: Omit<User, '_id'>) => {
     const { name, email, age, gender, role, address } = values
     if (dataUpdate) {
       const data = {

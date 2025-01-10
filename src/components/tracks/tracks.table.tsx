@@ -3,16 +3,7 @@ import type { ColumnsType } from 'antd/es/table'
 import Title from 'antd/es/typography/Title'
 import { useEffect, useState } from 'react'
 
-export interface ITracks {
-  _id: string
-  title: string
-  description: string
-  category: string
-  imgUrl: string
-  trackUrl: string
-  countLike: number
-  countPlay: number
-}
+import { Track } from '@/types/track-management/track'
 
 const TracksTable = () => {
   const [listUsers, setListUsers] = useState([])
@@ -56,7 +47,7 @@ const TracksTable = () => {
     })
   }
 
-  const confirm = async (track: ITracks) => {
+  const confirm = async (track: Track) => {
     const res = await fetch(
       `http://localhost:8000/api/v1/tracks/${track._id}`,
       {
@@ -81,7 +72,7 @@ const TracksTable = () => {
     }
   }
 
-  const columns: ColumnsType<ITracks> = [
+  const columns: ColumnsType<Track> = [
     {
       dataIndex: '_id',
       title: 'STT',

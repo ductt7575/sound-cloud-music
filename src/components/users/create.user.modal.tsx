@@ -1,19 +1,22 @@
 import { Form, Input, InputNumber, Modal, notification, Select } from 'antd'
 
-import { IUsers } from './users.table'
+import { User } from '@/types/user-management/user'
+
 const { Option } = Select
 
-interface IProps {
+interface CreateUserModalProps {
   access_token: string
   getData: () => Promise<void>
   isCreateModalOpen: boolean
   setIsCreateModalOpen: (v: boolean) => void
 }
 
-const CreateUserModal = (props: IProps) => {
-  const { access_token, getData, isCreateModalOpen, setIsCreateModalOpen } =
-    props
-
+const CreateUserModal = ({
+  access_token,
+  getData,
+  isCreateModalOpen,
+  setIsCreateModalOpen
+}: CreateUserModalProps) => {
   const [form] = Form.useForm()
 
   const handleCloseCreateModal = () => {
@@ -21,7 +24,7 @@ const CreateUserModal = (props: IProps) => {
     setIsCreateModalOpen(false)
   }
 
-  const onFinish = async (values: Omit<IUsers, '_id'>) => {
+  const onFinish = async (values: Omit<User, '_id'>) => {
     console.log('Success:', values)
     const { name, email, password, age, gender, role, address } = values
 

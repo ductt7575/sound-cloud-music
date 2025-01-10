@@ -3,27 +3,8 @@ import type { ColumnsType } from 'antd/es/table'
 import Title from 'antd/es/typography/Title'
 import { useEffect, useState } from 'react'
 
-export interface IComments {
-  _id: string
-  content: string
-  moment: number
-  user: {
-    _id: string
-    email: string
-    name: string
-    role: string
-    type: string
-  }
-  track: {
-    _id: string
-    title: string
-    description: string
-    trackUrl: string
-  }
-  isDeleted: boolean
-  createdAt: string
-  updatedAt: string
-}
+import { Comment } from '@/types/comment-management/comment'
+
 const CommentsTable = () => {
   const [listComments, setListComments] = useState([])
 
@@ -66,7 +47,7 @@ const CommentsTable = () => {
     })
   }
 
-  const confirm = async (comment: IComments) => {
+  const confirm = async (comment: Comment) => {
     const res = await fetch(
       `http://localhost:8000/api/v1/comments/${comment._id}`,
       {
@@ -91,7 +72,7 @@ const CommentsTable = () => {
     }
   }
 
-  const columns: ColumnsType<IComments> = [
+  const columns: ColumnsType<Comment> = [
     {
       dataIndex: '_id',
       title: 'STT',
