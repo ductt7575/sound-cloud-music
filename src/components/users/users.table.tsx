@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { User } from '@/types/user-management/user'
 
 import CreateUserModal from './create.user.modal'
+import useUser from './hooks/useUser'
 import UpdateUserModal from './update.user.modal'
 
 const UsersTable = () => {
@@ -57,26 +58,32 @@ const UsersTable = () => {
     })
   }
 
-  const confirm = async (user: User) => {
-    const res = await fetch(`http://localhost:8000/api/v1/users/${user._id}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json'
+  const { deleteUserMutate } = useUser()
+
+  const handleOnChange = async (page: number, pageSize: number) => {
+    const res = await fetch(
+      `http://localhost:8000/api/v1/users?current=${page}&pageSize=${pageSize}`,
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json'
+        }
       }
-    })
+    )
 
     const d = await res.json()
-    if (d.data) {
-      notification.success({
-        message: 'Xóa user thành công.'
-      })
-      await getData()
-    } else {
+    if (!d.data) {
       notification.error({
         message: JSON.stringify(d.message)
       })
     }
+    setListUsers(d.data.result)
+    setMeta({
+      current: d.data.meta.current,
+      pageSize: d.data.meta.pageSize,
+      pages: d.data.meta.pages,
+      total: d.data.meta.total
+    })
   }
 
   const columns: ColumnsType<User> = [
@@ -113,7 +120,7 @@ const UsersTable = () => {
             <Popconfirm
               title="Delete the user"
               description={`Are you sure to delete this user. name = ${record.name}?`}
-              onConfirm={() => confirm(record)}
+              onConfirm={() => deleteUserMutate({ id: record._id })}
               okText="Yes"
               cancelText="No"
             >
@@ -126,32 +133,6 @@ const UsersTable = () => {
       }
     }
   ]
-
-  const handleOnChange = async (page: number, pageSize: number) => {
-    const res = await fetch(
-      `http://localhost:8000/api/v1/users?current=${page}&pageSize=${pageSize}`,
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    )
-
-    const d = await res.json()
-    if (!d.data) {
-      notification.error({
-        message: JSON.stringify(d.message)
-      })
-    }
-    setListUsers(d.data.result)
-    setMeta({
-      current: d.data.meta.current,
-      pageSize: d.data.meta.pageSize,
-      pages: d.data.meta.pages,
-      total: d.data.meta.total
-    })
-  }
 
   return (
     <div>
@@ -192,15 +173,11 @@ const UsersTable = () => {
       />
 
       <CreateUserModal
-        access_token={access_token}
-        getData={getData}
         isCreateModalOpen={isCreateModalOpen}
         setIsCreateModalOpen={setIsCreateModalOpen}
       />
 
       <UpdateUserModal
-        access_token={access_token}
-        getData={getData}
         isUpdateModalOpen={isUpdateModalOpen}
         setIsUpdateModalOpen={setIsUpdateModalOpen}
         dataUpdate={dataUpdate}

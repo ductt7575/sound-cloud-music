@@ -1,7 +1,7 @@
-import Title from 'antd/es/typography/Title'
+import { RouterProvider } from 'react-router-dom'
 
-function App() {
-  return <Title level={4}>Welcome to my admin app: User management</Title>
+import { router } from './routers'
+
+export const App = () => {
+  return <RouterProvider router={router} />
 }
-
-export default App

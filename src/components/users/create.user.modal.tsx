@@ -1,19 +1,17 @@
 import { Form, Input, InputNumber, Modal, notification, Select } from 'antd'
 
-import { User } from '@/types/user-management/user'
+import { UserUpsertParams } from '@/services/user/types'
+
+import useUser from './hooks/useUser'
 
 const { Option } = Select
 
 interface CreateUserModalProps {
-  access_token: string
-  getData: () => Promise<void>
   isCreateModalOpen: boolean
   setIsCreateModalOpen: (v: boolean) => void
 }
 
 const CreateUserModal = ({
-  access_token,
-  getData,
   isCreateModalOpen,
   setIsCreateModalOpen
 }: CreateUserModalProps) => {
@@ -23,33 +21,18 @@ const CreateUserModal = ({
     form.resetFields()
     setIsCreateModalOpen(false)
   }
+  const { createUserMutate } = useUser()
 
-  const onFinish = async (values: Omit<User, '_id'>) => {
-    console.log('Success:', values)
-    const { name, email, password, age, gender, role, address } = values
-
-    const data = { name, email, password, age, gender, role, address }
-    const res = await fetch('http://localhost:8000/api/v1/users', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-
-    const d = await res.json()
-    if (d.data) {
-      await getData()
-      notification.success({
-        message: 'Tạo mới user thành công.'
-      })
+  const onFinish = async (values: UserUpsertParams) => {
+    try {
+      await createUserMutate(values)
       handleCloseCreateModal()
-    } else {
+    } catch (err) {
       notification.error({
-        message: 'Có lỗi xảy ra',
-        description: JSON.stringify(d.message)
+        message: 'Error',
+        description: 'Failed to create user. Please try again.'
       })
+      console.error(err)
     }
   }
 

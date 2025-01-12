@@ -1,12 +1,12 @@
-import { Form, Input, InputNumber, Modal, notification, Select } from 'antd'
+import { Form, Input, InputNumber, Modal, Select } from 'antd'
 import { useEffect } from 'react'
 
 import { User } from '@/types/user-management/user'
 
+import useUser from './hooks/useUser'
+
 const { Option } = Select
 interface UpdateUserModalProps {
-  access_token: string
-  getData: () => Promise<void>
   isUpdateModalOpen: boolean
   setIsUpdateModalOpen: (v: boolean) => void
   dataUpdate: null | User
@@ -14,8 +14,6 @@ interface UpdateUserModalProps {
 }
 
 const UpdateUserModal = ({
-  access_token,
-  getData,
   isUpdateModalOpen,
   setIsUpdateModalOpen,
   dataUpdate,
@@ -42,6 +40,8 @@ const UpdateUserModal = ({
     setDataUpdate(null)
   }
 
+  const { updateUserMutate } = useUser()
+
   const onFinish = async (values: Omit<User, '_id'>) => {
     const { name, email, age, gender, role, address } = values
     if (dataUpdate) {
@@ -55,27 +55,11 @@ const UpdateUserModal = ({
         address
       }
 
-      const res = await fetch('http://localhost:8000/api/v1/users', {
-        method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-
-      const d = await res.json()
-      if (d.data) {
-        await getData()
-        notification.success({
-          message: 'Cập nhật user thành công.'
-        })
+      try {
+        await updateUserMutate(data)
         handleCloseCreateModal()
-      } else {
-        notification.error({
-          message: 'Có lỗi xảy ra',
-          description: JSON.stringify(d.message)
-        })
+      } catch (err) {
+        console.error('Error updating user:', err)
       }
     }
   }

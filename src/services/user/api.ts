@@ -25,7 +25,7 @@ export const updateUser = async (
 ): Promise<BaseAPIResponse<User>> => {
   return axiosBaseInstance({
     url: `/users`,
-    method: 'POST',
+    method: 'PATCH',
     data: params
   })
 }

@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react'
 
 import { Comment } from '@/types/comment-management/comment'
 
+import useComment from './hooks/useComment'
+
 const CommentsTable = () => {
   const [listComments, setListComments] = useState([])
 
@@ -16,6 +18,8 @@ const CommentsTable = () => {
     pages: 0,
     total: 0
   })
+
+  const { deleteCommentMutate } = useComment()
 
   useEffect(() => {
     getData()
@@ -45,31 +49,6 @@ const CommentsTable = () => {
       pages: d.data.meta.pages,
       total: d.data.meta.total
     })
-  }
-
-  const confirm = async (comment: Comment) => {
-    const res = await fetch(
-      `http://localhost:8000/api/v1/comments/${comment._id}`,
-      {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    )
-
-    const d = await res.json()
-    if (d.data) {
-      notification.success({
-        message: 'Xóa track thành công.'
-      })
-      await getData()
-    } else {
-      notification.error({
-        message: JSON.stringify(d.message)
-      })
-    }
   }
 
   const columns: ColumnsType<Comment> = [
@@ -102,7 +81,7 @@ const CommentsTable = () => {
             <Popconfirm
               title="Delete the user"
               description={`Are you sure to delete this track. name = ${record.content}?`}
-              onConfirm={() => confirm(record)}
+              onConfirm={() => deleteCommentMutate({ id: record._id })}
               okText="Yes"
               cancelText="No"
             >

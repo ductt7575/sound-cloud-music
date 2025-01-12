@@ -1,9 +1,13 @@
+import { useIsMutating } from '@tanstack/react-query'
 import { Button, notification, Popconfirm, Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import Title from 'antd/es/typography/Title'
 import { useEffect, useState } from 'react'
 
+import { trackQueryKey } from '@/services/track'
 import { Track } from '@/types/track-management/track'
+
+import useTrack from './hooks/useTrack'
 
 const TracksTable = () => {
   const [listUsers, setListUsers] = useState([])
@@ -47,30 +51,12 @@ const TracksTable = () => {
     })
   }
 
-  const confirm = async (track: Track) => {
-    const res = await fetch(
-      `http://localhost:8000/api/v1/tracks/${track._id}`,
-      {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    )
+  const { deleteTrackMutate } = useTrack()
 
-    const d = await res.json()
-    if (d.data) {
-      notification.success({
-        message: 'Xóa track thành công.'
-      })
-      await getData()
-    } else {
-      notification.error({
-        message: JSON.stringify(d.message)
-      })
-    }
-  }
+  const isDeleting = !!useIsMutating({
+    mutationKey: trackQueryKey.deleteTrack(),
+    exact: true
+  })
 
   const columns: ColumnsType<Track> = [
     {
@@ -109,7 +95,7 @@ const TracksTable = () => {
             <Popconfirm
               title="Delete the user"
               description={`Are you sure to delete this track. name = ${record.title}?`}
-              onConfirm={() => confirm(record)}
+              onConfirm={() => deleteTrackMutate({ id: record._id })}
               okText="Yes"
               cancelText="No"
             >
@@ -162,6 +148,7 @@ const TracksTable = () => {
       </div>
 
       <Table
+        loading={isDeleting}
         columns={columns}
         dataSource={listUsers}
         rowKey={'_id'}

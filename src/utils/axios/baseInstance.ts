@@ -2,7 +2,7 @@
 import { AxiosInstance, AxiosResponse, default as instance } from 'axios'
 
 const axiosBaseInstance: AxiosInstance = instance.create({
-  baseURL: `${import.meta.env.VITE_BE_URL}/api`,
+  baseURL: import.meta.env.VITE_BE_URL,
   timeout: 60 * 1000
 })
 

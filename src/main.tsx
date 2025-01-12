@@ -1,39 +1,17 @@
 import './App.scss'
 
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 
-import App from './App.tsx'
-import LayoutAdmin from './components/layout/LayoutAdmin/index.tsx'
-import CommentsPage from './screens/comments.page.tsx'
-import TracksPage from './screens/tracks.page.tsx'
-import UsersPage from './screens/users.page.tsx'
+import { App } from './App'
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <LayoutAdmin />,
-    children: [
-      { index: true, element: <App /> },
-      {
-        path: 'users',
-        element: <UsersPage />
-      },
-      {
-        path: 'tracks',
-        element: <TracksPage />
-      },
-      {
-        path: 'comments',
-        element: <CommentsPage />
-      }
-    ]
-  }
-])
+const queryClient = new QueryClient()
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+createRoot(document.getElementById('root') as HTMLElement).render(
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  </StrictMode>
 )

@@ -6,7 +6,7 @@ import { CommentGetDetailParams } from './types'
 
 export const getCommentList = async (): Promise<BaseAPIResponse<Comment[]>> => {
   return axiosBaseInstance({
-    url: '/users',
+    url: '/comments',
     method: 'GET'
   })
 }
@@ -15,7 +15,7 @@ export const deleteComment = async ({
   id
 }: CommentGetDetailParams): Promise<BaseAPIResponse<void>> => {
   return axiosBaseInstance({
-    url: `/users/${id}`,
+    url: `/comments/${id}`,
     method: 'DELETE'
   })
 }

@@ -2,36 +2,39 @@ import Title from 'antd/es/typography/Title'
 import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 
+import QueryProvider from '@/providers/QueryProvider/QueryProvider'
+
 import Header from '../Header'
+import useLogin from './hooks/useLogin'
 
 const LayoutAdmin = () => {
+  const { loginMutate } = useLogin()
+
   const getData = async () => {
-    const res = await fetch('http://localhost:8000/api/v1/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
+    try {
+      const result = await loginMutate({
         username: 'hoidanit@gmail.com',
         password: '123456'
       })
-    })
-
-    const d = await res.json()
-    if (d.data) {
-      localStorage.setItem('access_token', d.data.access_token)
+      if (result) {
+        localStorage.setItem('access_token', result.data.access_token)
+      }
+    } catch (error) {
+      console.error('Login failed:', error)
     }
   }
+
   useEffect(() => {
     getData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
-    <div>
+    <QueryProvider>
       <Title level={3}>Admin - Management</Title>
       <Header />
       <Outlet />
-    </div>
+    </QueryProvider>
   )
 }
 
